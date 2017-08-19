@@ -17,6 +17,10 @@ class WechatMsgHandler(tornado.web.RequestHandler):
         if msg != None:
             self.write(msg)
 
+class IndexHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.write("Hello, wxnotifier")
+
 def prepareWechat():
     itchat.auto_login(enableCmdQR=2, hotReload=True)
     rooms = itchat.get_chatrooms()
@@ -31,10 +35,10 @@ def prepareWechat():
 
 if __name__ == "__main__":
     print("PrepareWechat")
-    t = threading.Thread(target=prepareWechat, name="Wechat")
-    t.start()
+    # t = threading.Thread(target=prepareWechat, name="Wechat")
+    # t.start()
     print("Go!")
-    app = tornado.web.Application(handlers=[(r"/wechat", WechatMsgHandler)])
+    app = tornado.web.Application(handlers=[(r'/wechat', WechatMsgHandler), (r'/', IndexHandler)])
     http_server = tornado.httpserver.HTTPServer(app)
     http_server.listen(8765)
     tornado.ioloop.IOLoop.instance().start()
