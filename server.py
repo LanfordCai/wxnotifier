@@ -18,7 +18,7 @@ class WechatMsgHandler(tornado.web.RequestHandler):
             self.write(msg)
 
 def prepareWechat():
-    itchat.auto_login(enableCmdQR=True, hotReload=True)
+    itchat.auto_login(enableCmdQR=2, hotReload=True)
     rooms = itchat.get_chatrooms()
     print(len(rooms))
     for r in rooms:
