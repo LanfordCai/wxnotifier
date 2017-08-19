@@ -7,15 +7,17 @@ import global_variables
 
 
 class WechatMsgHandler(tornado.web.RequestHandler):
-    def get(self):
-        msg = self.get_argument('msg')
-        if global_variables.target_room is not None:
-            print("send!")
-            itchat.send(msg, global_variables.target_room["UserName"])
-        else:
-            print("target_room is None")
+    def post(self):
+        self.set_header("Content-Type", "application/x-www-form-urlencoded")
+        msg = self.get_body_argument("msg")
         if msg != None:
-            self.write(msg)
+            if global_variables.target_room is not None:
+                print("send!")
+                itchat.send(msg, global_variables.target_room["UserName"])
+            else:
+                print("target_room is None")
+        else:
+            print("msg is None")
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
@@ -35,8 +37,8 @@ def prepareWechat():
 
 if __name__ == "__main__":
     print("PrepareWechat")
-    # t = threading.Thread(target=prepareWechat, name="Wechat")
-    # t.start()
+    t = threading.Thread(target=prepareWechat, name="Wechat")
+    t.start()
     print("Go!")
     app = tornado.web.Application(handlers=[(r'/wechat', WechatMsgHandler), (r'/', IndexHandler)])
     http_server = tornado.httpserver.HTTPServer(app)
